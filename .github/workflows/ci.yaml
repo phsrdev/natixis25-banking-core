@@ -15,79 +15,34 @@ on:
 
 jobs:
 
-  s1_obter_codigo:
-    name: S1 - Obter código
+  pipeline:
+    name: Pipeline CI/CD
     runs-on: ubuntu-latest
 
     steps:
-      - name: S1 - Checkout do repositório
+
+      # S1
+      - name: S1 - Obter código
         uses: actions/checkout@v4
 
-
-  s2_instalar_dependencias:
-    name: S2 - Instalar dependências
-    runs-on: ubuntu-latest
-    needs: s1_obter_codigo
-
-    steps:
-      - name: S1 - Checkout do repositório
-        uses: actions/checkout@v4
-
+      # S2
       - name: S2 - Instalar dependências
         run: |
           echo "Instalando dependências..."
-          # Exemplo Node:
           # npm install
-          # Exemplo Python:
           # pip install -r requirements.txt
-          # Exemplo Java:
           # mvn install -DskipTests
 
-
-  s3_rodar_testes:
-    name: S3 - Rodar testes
-    runs-on: ubuntu-latest
-    needs: s2_instalar_dependencias
-
-    steps:
-      - name: S1 - Checkout do repositório
-        uses: actions/checkout@v4
-
-      - name: S2 - Garantir dependências instaladas (opcional)
-        run: |
-          echo "Dependências já instaladas na etapa anterior."
-          # Aqui normalmente não precisa reinstalar nada
-
-      - name: S3 - Executar testes
+      # S3
+      - name: S3 - Rodar testes
         run: |
           echo "Rodando testes..."
-          # Exemplo Node:
           # npm test
-          # Exemplo Python:
           # pytest
-          # Exemplo Java:
           # mvn test
 
-
-  deploy:
-    name: S4 - Deploy
-    runs-on: ubuntu-latest
-    needs: s3_rodar_testes
-
-    steps:
-      - name: S1 - Obter código (checkout)
-        uses: actions/checkout@v4
-
-      - name: S2 - Instalar dependências
-        run: |
-          echo "Instalando dependências para o deploy..."
-          # Exemplo Node:
-          # npm install --production
-          # Exemplo Python:
-          # pip install -r requirements.txt
-          # Exemplo Java:
-          # mvn install -DskipTests
-
-      - name: S3 - Deploy do projeto
+      # S4
+      - name: S4 - Deploy
         run: |
           echo "Fazendo deploy para o ambiente: ${{ github.event.inputs.environment }}"
+          # comando de deploy real aqui

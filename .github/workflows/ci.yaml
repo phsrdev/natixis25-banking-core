@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do repositório
+      - name: S1 - Checkout do repositório
         uses: actions/checkout@v4
 
 
@@ -30,10 +30,10 @@ jobs:
     needs: s1_obter_codigo
 
     steps:
-      - name: Checkout do repositório
+      - name: S1 - Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Instalar dependências
+      - name: S2 - Instalar dependências
         run: |
           echo "Instalando dependências..."
           # Exemplo Node:
@@ -50,10 +50,15 @@ jobs:
     needs: s2_instalar_dependencias
 
     steps:
-      - name: Checkout do repositório
+      - name: S1 - Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Executar testes
+      - name: S2 - Garantir dependências instaladas (opcional)
+        run: |
+          echo "Dependências já instaladas na etapa anterior."
+          # Aqui normalmente não precisa reinstalar nada
+
+      - name: S3 - Executar testes
         run: |
           echo "Rodando testes..."
           # Exemplo Node:
@@ -70,10 +75,19 @@ jobs:
     needs: s3_rodar_testes
 
     steps:
-      - name: Checkout do repositório
+      - name: S1 - Obter código (checkout)
         uses: actions/checkout@v4
 
-      - name: Deploy do projeto
+      - name: S2 - Instalar dependências
+        run: |
+          echo "Instalando dependências para o deploy..."
+          # Exemplo Node:
+          # npm install --production
+          # Exemplo Python:
+          # pip install -r requirements.txt
+          # Exemplo Java:
+          # mvn install -DskipTests
+
+      - name: S3 - Deploy do projeto
         run: |
           echo "Fazendo deploy para o ambiente: ${{ github.event.inputs.environment }}"
-          # Comando real de deploy aqui

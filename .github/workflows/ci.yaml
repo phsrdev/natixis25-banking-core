@@ -1,49 +1,50 @@
-name: Banking Core Test and Docker Build
-
+name: Banking Core CI
+ 
 on:
   workflow_dispatch:
-
-jobs: 
+ 
+jobs:
+  # Job original
   build:
     runs-on: ubuntu-latest
-
+ 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-
+ 
       - name: Set up Python 3.14
         uses: actions/setup-python@v6
         with:
           python-version: "3.14"
-
+ 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
+ 
       - name: Run tests
         run: pytest test_main.py
-
-  docker_buildPEDRO:
-    if: ${{ always() }}
+ 
+  # Novo job Docker
+  docker:
+    needs: build        # só corre se o build tiver sucesso
     runs-on: ubuntu-latest
-    needs: build
+ 
     steps:
-      
-      - name: Login to Docker Hub
+      - name: Checkout code
+        uses: actions/checkout@v6
+ 
+      - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          tags: phsrei/natixis25:latest
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+ 
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/banking-core:latest .
+ 
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/banking-core:latest
+ 
